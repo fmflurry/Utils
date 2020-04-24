@@ -7,10 +7,16 @@ import { tap, share } from 'rxjs/operators';
 })
 export class CacheManager {
   private DEFAULT_MAX_AGE = 300; // seconds
-  private cacheBag: { [key: string]: { itemAge: Date, subject: Observable<any>, result: any; } } = {};
+  private cacheBag: {
+    [key: string]: {
+      itemAge: Date,
+      subject: Observable<any>,
+      result: any;
+    }
+  } = {};
 
   get(key: string, initialRequest: Observable<any>, maxAge = this.DEFAULT_MAX_AGE) {
-    const cachedItem = this.getCachedItemFor(key, maxAge);
+    const cachedItem = this.cachedItemFor(key, maxAge);
 
     if (cachedItem.result) {
       return of(cachedItem.result);
@@ -20,9 +26,8 @@ export class CacheManager {
     cachedItem.subject = cachedItem.subject ||
       initialRequest.pipe(
         share(),
-        tap(nextResult => {
-          cachedItem.result = nextResult;
-        },
+        tap(
+          nextResult => { cachedItem.result = nextResult; },
           error => { throwError(error); },
         ));
     return cachedItem.subject;
@@ -38,11 +43,11 @@ export class CacheManager {
       .forEach(k => { this.invalid(k); });
   }
 
-  private getCachedItemFor(key: string, itemAge: number) {
+  private cachedItemFor(key: string, duration: number) {
     const cachedItem = this.cacheBag[key];
     if (!cachedItem || this.isExpired(cachedItem.itemAge)) {
       this.cacheBag[key] = {
-        itemAge: this.ageFor(itemAge),
+        itemAge: this.ageFor(duration),
         subject: null,
         result: null
       };
@@ -59,5 +64,4 @@ export class CacheManager {
   private isExpired(itemAge: Date) {
     return new Date(Date.now()).getTime() >= itemAge.getTime();
   }
-
 }
