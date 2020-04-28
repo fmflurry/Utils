@@ -1,12 +1,16 @@
 export class ApiUrlBuilder {
-  url: string;
-  hasAlreadyOneQueryParam: boolean;
+  private url: string;
+  private hasAlreadyOneQueryParam: boolean;
 
   constructor(baseUrl: string) {
     this.url = baseUrl;
   }
 
   withQueryParam(name: string, value: any) {
+    if (!value && value !== false) {
+      return this;
+    }
+
     if (this.hasAlreadyOneQueryParam) {
       this.url = `${this.url}&`;
     } else {
