@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError, of } from 'rxjs';
-import { tap, share } from 'rxjs/operators';
+import { Observable, BehaviorSbuject } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,27 +10,24 @@ export class CacheManager {
   private cacheBag: {
     [key: string]: {
       itemAge: Date,
-      subject: Observable<any>,
-      result: any;
+      subject: Observable<any>
     }
   } = {};
 
-  get(key: string, initialRequest: Observable<any>, maxAge = this.DEFAULT_MAX_AGE) {
+  get<T>(key: string, initialRequest?: Observable<any>, maxAge = this.DEFAULT_MAX_AGE): Observable<T> {
     const cachedItem = this.cachedItemFor(key, maxAge);
-
-    if (cachedItem.result) {
-      return of(cachedItem.result);
+    if (!initialRequest) {
+      return cachedItem.subject;
     }
 
-    // ensure to share initialRequest so we avoid multiple http calls
-    cachedItem.subject = cachedItem.subject ||
-      initialRequest.pipe(
-        share(),
-        tap(
-          nextResult => { cachedItem.result = nextResult; },
-          error => { throwError(error); },
-        ));
+    cachedItem.subject = cachedItem.subject
+      || initialRequest.pipe(shareReplay());
     return cachedItem.subject;
+  }
+  
+  set<T>(key: string, value: T, maxAge = this.DEFAULT_MAX_AGE) {
+    const cachedItem = this.cachedItemFor(key, maxAge);
+    cachedItem.subject = new BehaviorSubject<T>(value);
   }
 
   invalid(key: string) {
