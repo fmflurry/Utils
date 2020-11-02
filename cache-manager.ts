@@ -45,8 +45,7 @@ export class CacheManager {
     if (!cachedItem || this.isExpired(cachedItem.itemAge)) {
       this.cacheBag[key] = {
         itemAge: this.ageFor(duration),
-        subject: null,
-        result: null
+        subject: null
       };
       return this.cacheBag[key];
     }
