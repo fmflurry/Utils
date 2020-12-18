@@ -1,0 +1,28 @@
+{
+  "tfvc.location": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer\\tf.exe",
+  "tfvc.restrictWorkspace": true,
+  "team.showWelcomeMessage": false,
+  "vim.handleKeys": {
+    "<C-k>": false,
+    "<C-c>": false,
+    "<C-t>": false,
+    "<C-j>": false,
+    "vim.hlsearch": true,
+  },
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 14,
+  "team.pinnedQueries": [
+        {
+            "account": "tfs.dev.vl:8080",
+            "queryPath": "My Queries/all"
+        }
+  ],
+  "team.logging.level": "debug",
+  "window.zoomLevel": 0,
+  "editor.tabSize": 2,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "git.ignoreWindowsGit27Warning": true,
+  "workbench.colorTheme": "Overnight Slumber Italics",
+  "team.showFarewellMessage": false
+}
