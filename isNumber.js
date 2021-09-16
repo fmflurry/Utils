@@ -1,1 +1,1 @@
-const isNumber = value => +value == value;
+const isNumber = value => !!value && +value == value;
